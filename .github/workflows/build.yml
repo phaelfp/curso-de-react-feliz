@@ -28,3 +28,9 @@ jobs:
             modulo-01/modulo-01-exercicio-06.md
             modulo-01/modulo-01-exercicio-07.md
             modulo-01/modulo-01-extra-01.md
+      - uses: actions/download-artifact@v3
+        with:
+          name: react.epub
+
+      - name: Display structure of downloaded files
+        run: ls -R
