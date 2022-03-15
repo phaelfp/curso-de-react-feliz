@@ -14,7 +14,7 @@ jobs:
           echo Computing next tag number
           LASTPATCH=$(git describe --tags | cut -d- -f1 | cut -d. -f3)
           PATCH=$(($LASTPATCH+1))
-          echo "::set-output name=tagname::2.1.${PATCH}"
+          echo "::set-output name=tagname::1.0.${PATCH}"
 
       - name: Build release assets
         uses: docker://pandoc/core:2.9
@@ -39,10 +39,13 @@ jobs:
             modulo-01/modulo-01-exercicio-07.md
             modulo-01/modulo-01-extra-01.md
 
+      - name: List files
+        run: ls -las
+
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          token: ${{ secrets.TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.compute-tag.outputs.tagname }}
           commit: main
           artifacts: './react.epub'
