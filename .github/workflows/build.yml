@@ -31,7 +31,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: react.epub
-          path: /github/workspace
+          path: /home/runner/work/curso-de-react-feliz/curso-de-react-feliz
 
       - name: Display structure of downloaded files
         run: ls -R
