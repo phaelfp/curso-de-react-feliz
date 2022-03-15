@@ -1,25 +1,23 @@
 name: Build EPub
 
-on:
-  push:
-    branches: [ main ]
+on: push
 
 jobs:
   convert_via_pandoc:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+
       - name: Compute tag name
         id: compute-tag
         run: |
           echo Computing next tag number
           LASTPATCH=$(git describe --tags | cut -d- -f1 | cut -d. -f3)
           PATCH=$(($LASTPATCH+1))
-          echo "::set-output name=tagname::1.0.${PATCH}"
+          echo "::set-output name=tagname::2.1.${PATCH}"
+
       - name: Build release assets
-      - uses: docker://pandoc/core:2.9
+        uses: docker://pandoc/core:2.9
         with:
           args: >- # allows you to break string into multiple lines
             --standalone
@@ -40,6 +38,7 @@ jobs:
             modulo-01/modulo-01-exercicio-06.md
             modulo-01/modulo-01-exercicio-07.md
             modulo-01/modulo-01-extra-01.md
+
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
