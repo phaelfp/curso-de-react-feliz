@@ -11,7 +11,7 @@ jobs:
         with:
           args: >- # allows you to break string into multiple lines
             --standalone
-            --output=react.epub
+            --output=/github/workspace/react.epub
             --metadata title="Curso de React"
             --metadata pagetitle="Curso de React"
             --metadata author="Marco Bruno"
