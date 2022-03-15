@@ -1,17 +1,29 @@
 name: Build EPub
 
-on: push
+on:
+  push:
+    branches: [ main ]
 
 jobs:
   convert_via_pandoc:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Compute tag name
+        id: compute-tag
+        run: |
+          echo Computing next tag number
+          LASTPATCH=$(git describe --tags | cut -d- -f1 | cut -d. -f3)
+          PATCH=$(($LASTPATCH+1))
+          echo "::set-output name=tagname::1.0.${PATCH}"
+      - name: Build release assets
       - uses: docker://pandoc/core:2.9
         with:
           args: >- # allows you to break string into multiple lines
             --standalone
-            --output=/github/workspace/react.epub
+            --output=react.epub
             --metadata title="Curso de React"
             --metadata pagetitle="Curso de React"
             --metadata author="Marco Bruno"
@@ -28,10 +40,10 @@ jobs:
             modulo-01/modulo-01-exercicio-06.md
             modulo-01/modulo-01-exercicio-07.md
             modulo-01/modulo-01-extra-01.md
-      - uses: actions/download-artifact@v3
+      - name: Create release
+        uses: ncipollo/release-action@v1
         with:
-          name: react.epub
-          path: /home/runner/work/curso-de-react-feliz/curso-de-react-feliz
-
-      - name: Display structure of downloaded files
-        run: ls -R
+          token: ${{ secrets.TOKEN }}
+          tag: ${{ steps.compute-tag.outputs.tagname }}
+          commit: main
+          artifacts: './react.epub'
